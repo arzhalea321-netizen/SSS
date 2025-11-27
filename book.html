@@ -1,992 +1,494 @@
 <!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Selamat Ulang Tahun — Sofi Adhiyah Marwah 💕</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="page-root">
-    <header class="top">
-      <h1>Selamat Ulang Tahun, yaa</h1>
-      <p class="subtitle">Semoga harimu seindah senyummuu 💗</p>
-    </header>
 
-    <main class="layout">
-      <section class="left-col">
-        <div class="card cake-area" id="cakeArea" data-heartable>
-          <!-- Rapi CSS cake -->
-          <div class="cake-wrap" id="mainCake">
-            <div class="cake-tier tier3"></div>
-            <div class="cake-tier tier2"></div>
-            <div class="cake-tier tier1"></div>
-            <div class="cake-frost"></div>
-            <div class="candles">
-              <span class="candle" style="--i:0"></span>
-              <span class="candle" style="--i:1"></span>
-              <span class="candle" style="--i:2"></span>
-            </div>
-          </div>
-          <p class="cake-text">happy birthday✨</p>
-          <div class="card-actions">
-            <button class="btn btn-primary" id="openBookBtn" data-heartable>Speciall</button>
-            <button class="btn btn-outline" id="playBtn">Putar Musik ▶</button>
-          </div>
-        </div>
-      </section>
+<html lang="id">  
+<head>  
+  <meta charset="utf-8" />  
+  <meta name="viewport" content="width=device-width,initial-scale=1" />  
+  <title>Buku special cenaa — Catatan & Pelajaran Spesial (Fixed)</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">  
+  <link rel="stylesheet" href="styles.css" />  
+  <style>  
+    /* Minimal overrides/ensures for visibility of controls */  
+    .controls { display:flex; gap:12px; justify-content:center; margin-top:12px; z-index:120; position:relative; }  
+    #toggleBookBtn { display:inline-flex; align-items:center; justify-content:center; }  
+    /* keep cover pointer obvious */  
+    .cover { cursor:pointer; }  
+    /* ensure inner-page and buttons visible */  
+    .inner-page { z-index:20; }  
+    .panel-footer { z-index:22; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }  
+    /* ensure canvas sits on top of book-wrap area */  
+    #fwCanvas { position: absolute; pointer-events: none; z-index:60; }  /* Heart particle style — supaya spawnHeartsAt terlihat */  
+.heart {  
+  position: absolute;  
+  pointer-events: none;  
+  transform-origin: center;  
+  border-radius: 50%;  
+  width: 20px;  
+  height: 20px;  
+  background: linear-gradient(180deg, #E27DFA, #E27Def);  
+  /* heart shape via clip-path */  
+  clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 50% 80%, 18% 100%, 0% 35%);  
+  box-shadow: 0 6px 18px rgba(170,40,100,0.14), inset 0 -6px 10px rgba(255,255,255,0.08);  
+  will-change: transform, opacity;  
+  z-index: 9999;  
+}  
+.heart.small { width: 12px; height: 12px; opacity: 0.95; }  
+.heart.large { width: 28px; height: 28px; }  
 
-      <section class="right-col">
-        <div class="card photo-polaroid">
-          <div class="polaroid">
-            <img src="Fotoini.jpg" alt="Foto" class="photo" />
-            <div class="polaroid-caption">Untukmu🤏 </div>
-          </div>
-        </div>
+/* Gallery grid */  
+.gallery-grid {  
+  display: grid;  
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  
+  gap: 12px;  
+  align-items: start;  
+  margin-top: 8px;  
+}  
+.gallery-grid img {  
+  width: 100%;  
+  height: 120px;  
+  object-fit: cover;  
+  border-radius: 8px;  
+  cursor: pointer;  
+  box-shadow: 0 8px 18px rgba(120,60,90,0.06);  
+  transition: transform .18s ease, box-shadow .18s ease;  
+  display: block;  
+}  
+.gallery-grid img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 14px 28px rgba(120,60,90,0.12); }  
 
-        <div class="card short-note">
-          <p>“Selamat ulang tahun sofii. Semoga harimu secantik dirimu, jangan lupa bahagia hari ini, kamu pantas buat di rayakan.”</p>
-        </div>
-      </section>
-    </main>
+/* Lightbox (full-screen modal) */  
+.lightbox {  
+  position: fixed;  
+  inset: 0;  
+  display: none;  
+  align-items: center;  
+  justify-content: center;  
+  background: rgba(12,6,10,0.6);  
+  z-index: 1200;  
+  padding: 24px;  
+}  
+.lightbox.show { display: flex; }  
+.lightbox-img {  
+  max-width: 92%;  
+  max-height: 80%;  
+  border-radius: 8px;  
+  box-shadow: 0 18px 60px rgba(20,10,20,0.6);  
+}  
+.lightbox-close {  
+  position: fixed;  
+  top: 18px;  
+  right: 18px;  
+  background: transparent;  
+  border: none;  
+  color: #fff;  
+  font-size: 36px;  
+  cursor: pointer;  
+  z-index: 1210;  
+}  
+.lightbox-caption {  
+  margin-top: 12px;  
+  color: #ffd6ea;  
+  text-align: center;  
+}  
 
-    <div id="particles-root" aria-hidden="true"></div>
+/* Accessibility helper - hide from layout when aria-hidden true */  
+.lightbox[aria-hidden="true"] { display: none; }
 
-    <audio id="bgmusic" src="lastnight.mp3" loop preload="auto"></audio>
+  </style>  
+</head>  
+<body>  
+  <div class="book-scene">  
+    <h2 class="scene-title" style="text-align:center;color:#ff87c1;margin-bottom:12px">🎉Just For you🎉</h2>  <div class="book-wrap" style="display:flex;justify-content:center;position:relative;padding:24px">  
+  <div class="book closed" id="book" data-heartable style="width:980px;height:600px;position:relative;perspective:2200px;">  
+    <div class="spine" style="position:absolute;left:14px;top:20px;bottom:20px;width:44px;background:linear-gradient(180deg,#ffd6ea,#ffb3d6);border-radius:6px;z-index:9;display:flex;align-items:center;justify-content:center;transform:rotate(-2deg)">  
+      <div class="spinetext" style="writing-mode:vertical-rl;transform:rotate(180deg);font-weight:700;color:#6a123f;font-family:'Merriweather',serif">BUKU</div>  
+    </div>  
 
-    <footer class="footer"> 💕Cuman bisa ngasih ini💕</footer>
-<footer class="footer"> pngennya si ngsih bunga</footer>
-<footer class="footer"> —arzaa</footer>
-  </div>
+    <div class="cover" id="cover" data-heartable style="position:absolute;left:0;top:0;width:100%;height:100%;border-radius:12px;background:linear-gradient(180deg,#ff5cae,#ff87c1);box-shadow:0 18px 50px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;color:white;z-index:30;transform-origin:left;transition:transform .9s cubic-bezier(.2,.9,.2,1);">  
+      <div style="text-align:center">  
+        <div style="font-family:'Merriweather',serif;font-weight:700;font-size:36px;">happy birthday sopii💫</div>  
+        <div style="margin-top:8px;opacity:0.95">dibacaa yaa</div>  
+        <div style="font-size:12px;margin-top:12px;opacity:0.95">Klik sampul untuk membuka</div>  
+      </div>  
+    </div>  
+
+    <!-- unified inner page containing multiple panels -->  
+    <div class="inner-page book-inner" id="innerPage" role="document" aria-hidden="true" style="position:absolute;inset:18px;border-radius:10px;background:#fffafc;padding:0;overflow:hidden;display:flex;flex-direction:column;z-index:10;opacity:0;pointer-events:none;">  
+      <div class="inner-header" style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(0,0,0,0.04);background:rgba(255,255,255,0.03);">  
+        <div class="page-title" id="headerTitle" style="font-weight:700;color:#ff66b3;font-size:18px">Halaman Khusus</div>  
+        <div class="page-counter" id="pageCounter" style="font-size:13px;color:#6b4b5a">1 / 4</div>  
+      </div>  
+
+      <div class="panels" id="panelsRoot" style="position:relative;flex:1;overflow:hidden">  
+        <!-- Panel 0 -->  
+        <section class="panel active" data-index="0" id="panel-0" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">  
+          <div style="padding:8px 0">  
+            <div id="insideCake" class="inside-cake" title="Klik kue untuk tiup lilin & hati" style="width:380px;height:260px;margin:8px auto 20px;position:relative;display:flex;align-items:flex-end;justify-content:center;cursor:pointer">  
+              <div class="inside-tier3" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:200px;height:46px;bottom:156px;background:linear-gradient(180deg,#fffafc,#ffeff6)"></div>  
+              <div class="inside-tier2" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:250px;height:64px;bottom:110px;background:linear-gradient(180deg,#ffeef7,#ffdfe9)"></div>  
+              <div class="inside-tier1" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:320px;height:90px;bottom:20px;background:linear-gradient(180deg,#ffdfec,#ffd6ea)"></div>  
+              <div class="inside-candles" style="position:absolute;bottom:200px;display:flex;gap:12px">  
+                <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>  
+                <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>  
+                <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>  
+              </div>  
+            </div>  
+
+            <div style="text-align:center;margin-top:8px;font-weight:600;color:#6b3a4d">happy birthday sofii yang ke-17 tahun ✨</div>  
+
+            <div style="margin-top:18px">  
+              <div style="font-weight:700;color:#ff66b3;margin-bottom:6px">Untukmu 💕  
+             </div>  
+              <p style="color: #FFA1B9;">“Selamat ulang tahun. Semoga tahun ini menjadi bab baru yang lebih indah buat kamu, setiap doamu menemukan jalan pulang, dan setiap harapanmu bertemu dengan takdir terbaiknya.”</p>  
+            </div>  
+
+            <div style="text-align:center;padding:12px 0;color:#7a5a6c">Halaman Utama</div>  
+          </div>  
+        </section>  
+
+        <!-- Panel 1 -->  
+        <section class="panel" data-index="1" id="panel-1" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">  
+          <div style="padding:8px 0">  
+            <div style="font-weight:700;color:#ff66b3;margin-bottom:8px">Pelajaran & Harapan</div>  
+            <p style="color: #ff66b3;">Hari ini, aku belajar bahwa cinta bukan hanya tentang hadir, tapi tentang bertahan—di hari baik, maupun hari yang sulit.
+
+Dan kamu… adalah rumah paling tenang untuk pulang</p>
+<ol style="margin-top:10px; color:#ff66b3">
+<li>Kamu adalah alasan sederhana yang mengubah hari-hariku yang monokrom itu menjadi warna - warna indah dalam hidupku.</li>
+<li>Semoga hatimu selalu diberi alasan untuk tersenyum.</li>
+<li>Semoga aku bisa menjadi salah satu dari alasan itu</li><li>Senyum terus yaa, aku suka liatnya
+</ol>
+<div style="text-align:center;padding:12px 0;color:#7a5a6c">Selamat ulang tahunnn yaaa.
+Terima kasih sudah ada, dengan seluruh indahmu (iiii alay beut alay hahaha, cuman sm kmu klo ke yg lain sok cool🤭).</div>
+</div>
+</section>
+
+<!-- Panel 2 (Galeri Momen) - updated with gallery grid -->a  
+        <section class="panel" data-index="2" id="panel-2" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">  
+          <div style="padding:8px 0">  
+            <div style="font-weight:700;color:#ff66b3;margin-bottom:8px">opii-chan</div>  
+
+            <!-- Ganti src dengan path gambar kamu (simpan gambar di folder images/ atau sesuaikan path) -->  
+              
+              
+            <div class="gallery-grid" id="galleryGrid">  
+              <img src="Fotonya.jpg" alt="Momen 1" loading="lazy" />  
+              <img src="Fotonya2.jpg" alt="Momen 2" loading="lazy" />  
+              <img src="Fotonya3.jpg" alt="Momen 3" loading="lazy" />  
+              <img src="Fotonya4.jpg" alt="Momen 4" loading="lazy" />  
+              <img src="Fotonya5.jpg" alt="Momen 5" loading="lazy"/>  
+              <img src="Fotonya6.jpg" alt="Momen 6" loading="lazy"/>  
+                
+              <!-- Tambah <img src="..."> lagi sesuai kebutuhan -->  
+            </div>  
+
+            <div style="text-align:center;padding:12px 0;color:#7a5a6c">🌟✨💖💕💞💘💝💐🌸🎀🎉🎊💫🌈🫶❤️⭐</div>  
+            <div style="text-align:center;padding:12px 0;color:#7a5a6c">️maap yaa ss tnpa ijinn, nanti di apus koo hhe</div>  
+          </div>  
+        </section>  
+
+        <!-- Panel 3 -->  
+        <section class="panel" data-index="3" id="panel-3" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">  
+          <div style="padding:8px 0">  
+            <div style="font-weight:700;color:#7a5a6c;margin-bottom:8px">dibacaa yahhh💢</div>  
+            <p style="color: #ff66b3;">“Setelah semua doa dan harapan yang kutitipkan untukmu, ada satu hal yang paling ingin arza sampein: Arza bersyukur bisa mencintaimu di dunia yang sering kali terasa terburu-buru. Kamu adalah jeda yang membuat segalanya lebih tenang, dan lebih berarti.
+
+Selamat ulang tahun, Sofi. Semoga di usia barumu setiap langkahmu dipenuhi cahaya, dan semua mimpimu menemukan jalan untuk jadi nyata. Dan semoga hatimu selalu dikelilingi oleh orang yang baik, dan di jauhkan dari orang yang jahat, kalo orang jahat nya itu arza gapapa ya allah jauhin aja ya
+Terima kasih sudah membuka ruang di hidupmu untukku—ruang yang membuatku merasa dicintai, dan diterima, aku seneng bisa mnjadi tempat cerita tntang hari - harimu, aku pngenn bahuku jadi tempat ceritamu, keluhmu, masalahmu yg paling nyaman. Aku berharap perjalananmu ke depan akan selalu ditemani kebahagiaan, dan hal-hal indah yang mungkin belum pernah kamu bayangkan sebelumnya.
+Aku ga tahu di mana takdir akan membawa kita nanti, tapi aku tahu satu hal: Selama aku masih bisa, i'm still here for you—menemani, dan mencintai dengan cara yang arza bisa.
+Selamat beristirahat ya malam ini jgn sering gdang ksian bdan kmu btuh istirahat. Dengan doaa:
+Semoga aku selalu menjadi bagian dari ceritamu:), oh iyaa jngan lupa ngapalinn, semangat ulangannyaaa, sma jngan nangis nangis terus yaaa sofii, dan jangan merasa ga ada yg peduli denganmu, gitu aja ya bai.”ㅤㅤ— Dari ku, Arzhalhea 18.11.25</p>
+<div style="margin-top:12px;padding:10px;border-left:4px solid #ff66b3;background:#7a5a6c;border-radius:8px">Selamat ulang tahun! I love youu🎉💗.</div>
+<div style="margin-top:18px;font-weight:700;color:#ff5cae">Selamat ulang tahun! 🎉💗</div>
+<div style="text-align:center;padding:12px 0;color:#7a5a6c">Halaman 4</div>
+</div>
+</section>
+</div>
+
+<div class="panel-footer" style="display:flex;gap:12px;justify-content:center;padding:12px 20px;">  
+        <button id="prevBtn" class="btn btn-ghost" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)">Sebelumnya</button>  
+        <button id="nextBtn" class="btn btn-primary" style="padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff5cae,#ff87c1);color:#fff">Selanjutnya</button>  
+      </div>  
+    </div>  
+
+    <!-- canvas for fireworks -->  
+    <canvas id="fwCanvas"></canvas>  
+  </div>  
+</div>  
+
+<div class="controls" style="display:flex;gap:12px;justify-content:center;margin-top:12px;position:relative;z-index:120;">  
+  <button class="btn btn-primary" id="toggleBookBtn" data-heartable style="padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff5cae,#ff87c1);color:#fff">Buka / Tutup Buku</button>  
+  <a href="index.html" class="btn btn-ghost" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);color:#ff87c1">Kembali</a>  
+</div>
+
+  </div>  <audio id="bgmusic_book" src="monokrom.mp3" loop preload="auto"></audio>
+
+  <!-- Lightbox modal (global, di luar inner-page supaya tidak terkena overflow clipping) -->    <div id="lightbox" class="lightbox" aria-hidden="true">  
+    <button class="lightbox-close" aria-label="Tutup">&times;</button>  
+    <div style="text-align:center">  
+      <img class="lightbox-img" src="" alt=""/>  
+      <div class="lightbox-caption" id="lightboxCaption"></div>  
+    </div>  
+  </div>    <script>  
+    // Fixed interactions: cover click, toggle button, panel navigation, hearts and fireworks  
+    document.addEventListener('DOMContentLoaded', () => {  
+      const book = document.getElementById('book');  
+      const cover = document.getElementById('cover');  
+      const toggleBtn = document.getElementById('toggleBookBtn');  
+      const innerPage = document.getElementById('innerPage');  
+      const panels = Array.from(document.querySelectorAll('.panel'));  
+      const prevBtn = document.getElementById('prevBtn');  
+      const nextBtn = document.getElementById('nextBtn');  
+      const headerTitle = document.getElementById('headerTitle');  
+      const pageCounter = document.getElementById('pageCounter');  
+      const insideCake = document.getElementById('insideCake');  
+      const fwCanvas = document.getElementById('fwCanvas');  
+      const music = document.getElementById('bgmusic_book');  
   
-  <script src="script.js"></script>
-</body>
-</html>
-    .heart.large { width: 28px; height: 28px; }
-
-    /* Gallery grid */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 12px;
-      align-items: start;
-      margin-top: 8px;
-    }
-    .gallery-grid img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 8px 18px rgba(120,60,90,0.06);
-      transition: transform .18s ease, box-shadow .18s ease;
-      display: block;
-    }
-    .gallery-grid img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 14px 28px rgba(120,60,90,0.12); }
-
-    /* Lightbox (full-screen modal) */
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(12,6,10,0.6);
-      z-index: 1200;
-      padding: 24px;
-    }
-    .lightbox.show { display: flex; }
-    .lightbox-img {
-      max-width: 92%;
-      max-height: 80%;
-      border-radius: 8px;
-      box-shadow: 0 18px 60px rgba(20,10,20,0.6);
-    }
-    .lightbox-close {
-      position: fixed;
-      top: 18px;
-      right: 18px;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 36px;
-      cursor: pointer;
-      z-index: 1210;
-    }
-    .lightbox-caption {
-      margin-top: 12px;
-      color: #ffd6ea;
-      text-align: center;
-    }
-
-    /* Accessibility helper - hide from layout when aria-hidden true */
-    .lightbox[aria-hidden="true"] { display: none; }
-  </style>
-</head>
-<body>
-  <div class="book-scene">
-    <h2 class="scene-title" style="text-align:center;color:#ff87c1;margin-bottom:12px">🎉Just For you🎉</h2>
-
-    <div class="book-wrap" style="display:flex;justify-content:center;position:relative;padding:24px">
-      <div class="book closed" id="book" data-heartable style="width:980px;height:600px;position:relative;perspective:2200px;">
-        <div class="spine" style="position:absolute;left:14px;top:20px;bottom:20px;width:44px;background:linear-gradient(180deg,#ffd6ea,#ffb3d6);border-radius:6px;z-index:9;display:flex;align-items:center;justify-content:center;transform:rotate(-2deg)">
-          <div class="spinetext" style="writing-mode:vertical-rl;transform:rotate(180deg);font-weight:700;color:#6a123f;font-family:'Merriweather',serif">BUKU</div>
-        </div>
-
-        <div class="cover" id="cover" data-heartable style="position:absolute;left:0;top:0;width:100%;height:100%;border-radius:12px;background:linear-gradient(180deg,#ff5cae,#ff87c1);box-shadow:0 18px 50px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;color:white;z-index:30;transform-origin:left;transition:transform .9s cubic-bezier(.2,.9,.2,1);">
-          <div style="text-align:center">
-            <div style="font-family:'Merriweather',serif;font-weight:700;font-size:36px;">happy birthday sopii💫</div>
-            <div style="margin-top:8px;opacity:0.95">dibacaa yaa</div>
-            <div style="font-size:12px;margin-top:12px;opacity:0.95">Klik sampul untuk membuka</div>
-          </div>
-        </div>
-
-        <!-- unified inner page containing multiple panels -->
-        <div class="inner-page book-inner" id="innerPage" role="document" aria-hidden="true" style="position:absolute;inset:18px;border-radius:10px;background:#fffafc;padding:0;overflow:hidden;display:flex;flex-direction:column;z-index:10;opacity:0;pointer-events:none;">
-          <div class="inner-header" style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(0,0,0,0.04);background:rgba(255,255,255,0.03);">
-            <div class="page-title" id="headerTitle" style="font-weight:700;color:#ff66b3;font-size:18px">Halaman Khusus</div>
-            <div class="page-counter" id="pageCounter" style="font-size:13px;color:#6b4b5a">1 / 4</div>
-          </div>
-
-          <div class="panels" id="panelsRoot" style="position:relative;flex:1;overflow:hidden">
-            <!-- Panel 0 -->
-            <section class="panel active" data-index="0" id="panel-0" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div id="insideCake" class="inside-cake" title="Klik kue untuk tiup lilin & hati" style="width:380px;height:260px;margin:8px auto 20px;position:relative;display:flex;align-items:flex-end;justify-content:center;cursor:pointer">
-                  <div class="inside-tier3" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:200px;height:46px;bottom:156px;background:linear-gradient(180deg,#fffafc,#ffeff6)"></div>
-                  <div class="inside-tier2" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:250px;height:64px;bottom:110px;background:linear-gradient(180deg,#ffeef7,#ffdfe9)"></div>
-                  <div class="inside-tier1" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:320px;height:90px;bottom:20px;background:linear-gradient(180deg,#ffdfec,#ffd6ea)"></div>
-                  <div class="inside-candles" style="position:absolute;bottom:200px;display:flex;gap:12px">
-                    <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>
-                    <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>
-                    <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>
-                  </div>
-                </div>
-
-                <div style="text-align:center;margin-top:8px;font-weight:600;color:#6b3a4d">happy birthday sofii yang ke-17 tahun ✨</div>
-
-                <div style="margin-top:18px">
-                  <div style="font-weight:700;color:#ff66b3;margin-bottom:6px">Untukmu 💕
-                 </div>
-                  <p style="color: #FFA1B9;">“Selamat ulang tahun. Semoga tahun ini menjadi bab baru yang lebih indah buat kamu, setiap doamu menemukan jalan pulang, dan setiap harapanmu bertemu dengan takdir terbaiknya.”</p>
-                </div>
-
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">Halaman Utama</div>
-              </div>
-            </section>
-
-            <!-- Panel 1 -->
-            <section class="panel" data-index="1" id="panel-1" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div style="font-weight:700;color:#ff66b3;margin-bottom:8px">Pelajaran & Harapan</div>
-                <p style="color: #ff66b3;">Hari ini, aku belajar bahwa cinta bukan hanya tentang hadir, tapi tentang bertahan—di hari baik, maupun hari yang sulit.
-Dan kamu… adalah rumah paling tenang untuk pulang</p>
-                <ol style="margin-top:10px; color:#ff66b3">
-                  <li>Kamu adalah alasan sederhana yang mengubah hari-hariku yang monokrom itu menjadi warna - warna indah dalam hidupku.</li>
-                  <li>Semoga hatimu selalu diberi alasan untuk tersenyum.</li>
-                  <li>Semoga aku bisa menjadi salah satu dari alasan itu</li><li>Senyum terus yaa, aku suka liatnya
-                </ol>
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">Selamat ulang tahunnn yaaa. 
-Terima kasih sudah ada, dengan seluruh indahmu (iiii alay beut alay hahaha, cuman sm kmu klo ke yg lain sok cool🤭).</div>
-              </div>
-            </section>
-
-            <!-- Panel 2 (Galeri Momen) - updated with gallery grid -->a
-            <section class="panel" data-index="2" id="panel-2" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div style="font-weight:700;color:#ff66b3;margin-bottom:8px">opii-chan</div>
-
-                <!-- Ganti src dengan path gambar kamu (simpan gambar di folder images/ atau sesuaikan path) -->
-                
-                
-                <div class="gallery-grid" id="galleryGrid">
-                  <img src="Fotonya.jpg" alt="Momen 1" loading="lazy" />
-                  <img src="Fotonya2.jpg" alt="Momen 2" loading="lazy" />
-                  <img src="Fotonya3.jpg" alt="Momen 3" loading="lazy" />
-                  <img src="Fotonya4.jpg" alt="Momen 4" loading="lazy" />
-                  <img src="Fotonya5.jpg" alt="Momen 5" loading="lazy"/>
-                  <img src="Fotonya6.jpg" alt="Momen 6" loading="lazy"/>
-                  
-                  <!-- Tambah <img src="..."> lagi sesuai kebutuhan -->
-                </div>
-
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">🌟✨💖💕💞💘💝💐🌸🎀🎉🎊💫🌈🫶❤️⭐</div>
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">️maap yaa ss tnpa ijinn, nanti di apus koo hhe</div>
-              </div>
-            </section>
-
-            <!-- Panel 3 -->
-            <section class="panel" data-index="3" id="panel-3" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div style="font-weight:700;color:#7a5a6c;margin-bottom:8px">dibacaa yahhh💢</div>
-                <p style="color: #ff66b3;">“Setelah semua doa dan harapan yang kutitipkan untukmu, ada satu hal yang paling ingin arza sampein: Arza bersyukur bisa mencintaimu di dunia yang sering kali terasa terburu-buru. Kamu adalah jeda yang membuat segalanya lebih tenang, dan lebih berarti.
-
-Selamat ulang tahun, Sofi. Semoga di usia barumu setiap langkahmu dipenuhi cahaya, dan semua mimpimu menemukan jalan untuk jadi nyata. Dan semoga hatimu selalu dikelilingi oleh orang yang baik, dan di jauhkan dari orang yang jahat, kalo orang jahat nya itu arza gapapa ya allah jauhin aja ya
-Terima kasih sudah membuka ruang di hidupmu untukku—ruang yang membuatku merasa dicintai, dan diterima, aku seneng bisa mnjadi tempat cerita tntang hari - harimu, aku pngenn bahuku jadi tempat ceritamu, keluhmu, masalahmu yg paling nyaman. Aku berharap perjalananmu ke depan akan selalu ditemani kebahagiaan, dan hal-hal indah yang mungkin belum pernah kamu bayangkan sebelumnya.                  
-Aku ga tahu di mana takdir akan membawa kita nanti, tapi aku tahu satu hal: Selama aku masih bisa, i'm still here for you—menemani, dan mencintai dengan cara yang arza bisa.
-Selamat beristirahat ya malam ini jgn sering gdang ksian bdan kmu btuh istirahat. Dengan doaa:
- Semoga aku selalu menjadi bagian dari ceritamu:), oh iyaa jngan lupa ngapalinn, semangat ulangannyaaa, sma jngan nangis nangis terus yaaa sofii, dan jangan merasa ga ada yg peduli denganmu, gitu aja ya bai.”ㅤㅤ— Dari ku, Arzhalhea 18.11.25</p>
-                <div style="margin-top:12px;padding:10px;border-left:4px solid #ff66b3;background:#7a5a6c;border-radius:8px">Selamat ulang tahun! I love youu🎉💗.</div>
-                <div style="margin-top:18px;font-weight:700;color:#ff5cae">Selamat ulang tahun! 🎉💗</div>
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">Halaman 4</div>
-              </div>
-            </section>
-          </div>
-
-          <div class="panel-footer" style="display:flex;gap:12px;justify-content:center;padding:12px 20px;">
-            <button id="prevBtn" class="btn btn-ghost" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)">Sebelumnya</button>
-            <button id="nextBtn" class="btn btn-primary" style="padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff5cae,#ff87c1);color:#fff">Selanjutnya</button>
-          </div>
-        </div>
-
-        <!-- canvas for fireworks -->
-        <canvas id="fwCanvas"></canvas>
-      </div>
-    </div>
-
-    <div class="controls" style="display:flex;gap:12px;justify-content:center;margin-top:12px;position:relative;z-index:120;">
-      <button class="btn btn-primary" id="toggleBookBtn" data-heartable style="padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff5cae,#ff87c1);color:#fff">Buka / Tutup Buku</button>
-      <a href="index.html" class="btn btn-ghost" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);color:#ff87c1">Kembali</a>
-    </div>
-  </div>
-
-  <audio id="bgmusic_book" src="monokrom.mp3" loop preload="auto"></audio>
-
-  <!-- Lightbox modal (global, di luar inner-page supaya tidak terkena overflow clipping) -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
-    <button class="lightbox-close" aria-label="Tutup">&times;</button>
-    <div style="text-align:center">
-      <img class="lightbox-img" src="" alt=""/>
-      <div class="lightbox-caption" id="lightboxCaption"></div>
-    </div>
-  </div>
-
-  <script>
-    // Fixed interactions: cover click, toggle button, panel navigation, hearts and fireworks
-    document.addEventListener('DOMContentLoaded', () => {
-      const book = document.getElementById('book');
-      const cover = document.getElementById('cover');
-      const toggleBtn = document.getElementById('toggleBookBtn');
-      const innerPage = document.getElementById('innerPage');
-      const panels = Array.from(document.querySelectorAll('.panel'));
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const headerTitle = document.getElementById('headerTitle');
-      const pageCounter = document.getElementById('pageCounter');
-      const insideCake = document.getElementById('insideCake');
-      const fwCanvas = document.getElementById('fwCanvas');
-      const music = document.getElementById('bgmusic_book');
-
-      // try autoplay music
-      (async ()=> { try { await music.play(); } catch(e) {} })();
-
-      // canvas fit
-      function fitCanvas() {
-        const wrap = document.querySelector('.book-wrap');
-        const rect = wrap.getBoundingClientRect();
-        fwCanvas.style.left = rect.left + 'px';
-        fwCanvas.style.top = rect.top + 'px';
-        fwCanvas.width = rect.width;
-        fwCanvas.height = rect.height;
-        fwCanvas.style.width = rect.width + 'px';
-        fwCanvas.style.height = rect.height + 'px';
-      }
-      fitCanvas();
-      window.addEventListener('resize', fitCanvas);
-      const ctx = fwCanvas.getContext('2d');
-
-      // simple particle array for fireworks
-      let particles = [];
-      function pushFirework(x, y) {
-        const count = 20 + Math.floor(Math.random()*20);
-        const hue = Math.floor(Math.random()*360);
-        for (let i=0;i<count;i++){
-          const angle = Math.random()*Math.PI*2;
-          const speed = 1.8 + Math.random()*3.2;
-          particles.push({
-            x, y,
-            vx: Math.cos(angle)*speed,
-            vy: Math.sin(angle)*speed,
-            life: 600 + Math.random()*900,
-            born: performance.now(),
-            color: `hsl(${hue + Math.floor(Math.random()*40-20)} 90% 65%)`,
-            size: 1.5 + Math.random()*3
-          });
-        }
-      }
-
-      function anim(now) {
-        ctx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
-        for (let i = particles.length - 1; i >= 0; i--) {
-          const p = particles[i];
-          const t = now - p.born;
-          if (t > p.life) { particles.splice(i,1); continue; }
-          p.vy += 0.03; p.vx *= 0.998; p.vy *= 0.998;
-          p.x += p.vx; p.y += p.vy;
-          const alpha = 1 - (t / p.life);
-          ctx.beginPath();
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = alpha;
-          const canvasRect = fwCanvas.getBoundingClientRect();
-          ctx.arc(p.x - canvasRect.left, p.y - canvasRect.top, p.size, 0, Math.PI*2);
-          ctx.fill();
-          ctx.globalAlpha = 1;
-        }
-        requestAnimationFrame(anim);
-      }
-      requestAnimationFrame(anim);
-
-      // hearts DOM burst
-      function spawnHeartsAt(x, y, count = 12) {
-        const colors = ['#ff99cc','#ff66b3','#ffd6ea','#ffb3d6','#ff8ac1'];
-        for (let i=0;i<count;i++){
-          const h = document.createElement('div');
-          h.className = 'heart';
-          const size = 10 + Math.random()*26;
-          h.style.width = h.style.height = `${size}px`;
-          h.style.left = `${x - size/2}px`;
-          h.style.top = `${y - size/2}px`;
-          const c1 = colors[Math.floor(Math.random()*colors.length)];
-          const c2 = colors[Math.floor(Math.random()*colors.length)];
-          h.style.background = `linear-gradient(180deg, ${c1}, ${c2})`;
-          document.body.appendChild(h);
-          const dx = (Math.random()-0.5) * 240;
-          const dy = -120 - Math.random()*260;
-          const rot = (Math.random()*360)*(Math.random()>0.5?1:-1);
-          const dur = 800 + Math.random()*1400;
-          h.animate([
-            { transform: `translate(0px,0px) rotate(${rot}deg) scale(.9)`, opacity: 1 },
-            { transform: `translate(${dx}px, ${dy}px) rotate(${rot+120}deg) scale(1.15)`, opacity: 0 }
-          ], { duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
-          setTimeout(()=> h.remove(), dur + 120);
-        }
-      }
-
-      // panel navigation
-      let current = 0;
-      function updateHeader() {
-        const titles = ['Halaman Khusus','Pelajaran & Harapan','Galeri Momen (ga ada momen kita jadi foto sofi ajaa)','Pesan Penutup'];
-        headerTitle.textContent = titles[current] || `Halaman ${current+1}`;
-        pageCounter.textContent = `${current+1} / ${panels.length}`;
-      }
-      function showPanel(idx, dir='next') {
-        if (idx < 0 || idx >= panels.length) return;
-        const old = panels[current];
-        const next = panels[idx];
-        if (old === next) return;
-        old.classList.remove('active');
-        old.style.opacity = '0';
-        old.style.transform = `translateX(${dir==='next'?'-18px':'18px'}) scale(.995)`;
-        // prepare next
-        next.style.transition = 'none';
-        next.style.opacity = '0';
-        next.style.transform = `translateX(${dir==='next'?'18px':'-18px'}) scale(.995)`;
-        next.classList.add('active');
-        void next.offsetWidth;
-        next.style.transition = '';
-        next.style.transform = 'translateX(0) scale(1)';
-        next.style.opacity = '1';
-        // hearts feedback
-        const rect = book.getBoundingClientRect();
-        spawnHeartsAt(rect.left + rect.width/2, rect.top + rect.height/2, 10);
-        current = idx;
-        updateHeader();
-      }
-
-      nextBtn.addEventListener('click', () => {
-        if (current < panels.length - 1) showPanel(current + 1, 'next');
-        else {
-          const rect = book.getBoundingClientRect();
-          spawnHeartsAt(rect.left + rect.width/2, rect.top + 120, 18);
-          pushFirework(rect.left + rect.width/2, rect.top + 80);
-        }
-      });
-      prevBtn.addEventListener('click', () => {
-        if (current > 0) showPanel(current - 1, 'prev');
-      });
-
-      // open/close book
-      let open = false;
-      function openBook(doOpen = true) {
-        open = !!doOpen;
-        book.classList.toggle('open', open);
-        book.classList.toggle('closed', !open);
-        innerPage.style.opacity = open ? '1' : '0';
-        innerPage.style.pointerEvents = open ? 'auto' : 'none';
-        innerPage.setAttribute('aria-hidden', !open);
-        if (open) {
-          cover.style.transform = 'rotateY(-110deg) translateX(-6%)';
-          // fireworks bursts
-          const rect = book.getBoundingClientRect();
-          for (let i=0;i<5;i++){
-            setTimeout(()=> {
-              const x = rect.left + rect.width*(0.2 + Math.random()*0.6);
-              const y = rect.top + rect.height*0.18 + (Math.random()-0.5)*40;
-              pushFirework(x,y);
-            }, i*160);
-          }
-          spawnHeartsAt(window.innerWidth/2, window.innerHeight/2 - 80, 14);
-        } else {
-          cover.style.transform = 'rotateY(0deg)';
-        }
-      }
-
-      cover.addEventListener('click', () => openBook(true));
-      toggleBtn.addEventListener('click', () => openBook(!open));
-
-      // cake click
-      insideCake.addEventListener('click', (e) => {
-        const rect = insideCake.getBoundingClientRect();
-        spawnHeartsAt(rect.left + rect.width/2, rect.top + rect.height/2, 36);
-        pushFirework(rect.left + rect.width/2, rect.top + rect.height/2 - 40);
-        insideCake.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-8px) scale(1.04)' }, { transform: 'translateY(0) scale(1)' }], { duration: 420, easing: 'ease-out' });
-      });
-
-      // click anywhere in panels -> small hearts
-      document.getElementById('panelsRoot').addEventListener('click', (e) => {
-        spawnHeartsAt(e.clientX, e.clientY, 6);
-      });
-
-      // ambient bursts while open
-      let ambient = null;
-      function startAmbient() {
-        if (ambient) return;
-        ambient = setInterval(()=> {
-          if (!open) return;
-          const rect = book.getBoundingClientRect();
-          const x = rect.left + rect.width * (0.25 + Math.random()*0.5);
-          const y = rect.top + rect.height * (0.18 + Math.random()*0.2);
-          pushFirework(x,y);
-          spawnHeartsAt(x, y + 40, 6);
-        }, 2600);
-      }
-      function stopAmbient() { if (ambient) { clearInterval(ambient); ambient = null; } }
-      const obs = new MutationObserver(() => {
-        if (book.classList.contains('open')) startAmbient(); else stopAmbient();
-      });
-      obs.observe(book, { attributes: true });
-
-      // Gallery + Lightbox handlers (integrated)
-      const gallery = document.getElementById('galleryGrid');
-      const lightbox = document.getElementById('lightbox');
-      const lbImg = lightbox?.querySelector('.lightbox-img');
-      const lbCaption = document.getElementById('lightboxCaption');
-      const lbClose = lightbox?.querySelector('.lightbox-close');
-
-      function openLightbox(src, caption) {
-        if (!lightbox) return;
-        lbImg.src = src;
-        lbImg.alt = caption || '';
-        lbCaption.textContent = caption || '';
-        lightbox.classList.add('show');
-        lightbox.setAttribute('aria-hidden', 'false');
-        // small celebratory burst when opening a photo
-        spawnHeartsAt(window.innerWidth/2, window.innerHeight/2, 8);
-      }
-      function closeLightbox() {
-        if (!lightbox) return;
-        lightbox.classList.remove('show');
-        lightbox.setAttribute('aria-hidden', 'true');
-        lbImg.src = '';
-        lbCaption.textContent = '';
-      }
-
-      if (gallery) {
-        gallery.addEventListener('click', (e) => {
-          const img = e.target.closest('img');
-          if (!img) return;
-          openLightbox(img.src, img.alt || '');
-        });
-      }
-      if (lbClose) lbClose.addEventListener('click', closeLightbox);
-      if (lightbox) {
-        lightbox.addEventListener('click', (e) => {
-          if (e.target === lightbox) closeLightbox();
-        });
-      }
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeLightbox();
-      });
-
-      // expose helper to add images dynamically (e.g., from console or other script)
-      window.addToGallery = function(src, alt = '') {
-        if (!gallery) return;
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = alt;
-        img.loading = 'lazy';
-        gallery.appendChild(img);
-      };
-
-      // init
-      panels.forEach((p,i)=> { if (i !== 0) p.classList.remove('active'); else p.classList.add('active'); });
-      current = 0;
-      updateHeader();
-    });
-  </script>
-</body>
-                </html>    .heart.large { width: 28px; height: 28px; }
-
-    /* Gallery grid */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 12px;
-      align-items: start;
-      margin-top: 8px;
-    }
-    .gallery-grid img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 8px 18px rgba(120,60,90,0.06);
-      transition: transform .18s ease, box-shadow .18s ease;
-      display: block;
-    }
-    .gallery-grid img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 14px 28px rgba(120,60,90,0.12); }
-
-    /* Lightbox (full-screen modal) */
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(12,6,10,0.6);
-      z-index: 1200;
-      padding: 24px;
-    }
-    .lightbox.show { display: flex; }
-    .lightbox-img {
-      max-width: 92%;
-      max-height: 80%;
-      border-radius: 8px;
-      box-shadow: 0 18px 60px rgba(20,10,20,0.6);
-    }
-    .lightbox-close {
-      position: fixed;
-      top: 18px;
-      right: 18px;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 36px;
-      cursor: pointer;
-      z-index: 1210;
-    }
-    .lightbox-caption {
-      margin-top: 12px;
-      color: #ffd6ea;
-      text-align: center;
-    }
-
-    /* Accessibility helper - hide from layout when aria-hidden true */
-    .lightbox[aria-hidden="true"] { display: none; }
-  </style>
-</head>
-<body>
-  <div class="book-scene">
-    <h2 class="scene-title" style="text-align:center;color:#ff87c1;margin-bottom:12px">🎉Just For you🎉</h2>
-
-    <div class="book-wrap" style="display:flex;justify-content:center;position:relative;padding:24px">
-      <div class="book closed" id="book" data-heartable style="width:980px;height:600px;position:relative;perspective:2200px;">
-        <div class="spine" style="position:absolute;left:14px;top:20px;bottom:20px;width:44px;background:linear-gradient(180deg,#ffd6ea,#ffb3d6);border-radius:6px;z-index:9;display:flex;align-items:center;justify-content:center;transform:rotate(-2deg)">
-          <div class="spinetext" style="writing-mode:vertical-rl;transform:rotate(180deg);font-weight:700;color:#6a123f;font-family:'Merriweather',serif">BUKU</div>
-        </div>
-
-        <div class="cover" id="cover" data-heartable style="position:absolute;left:0;top:0;width:100%;height:100%;border-radius:12px;background:linear-gradient(180deg,#ff5cae,#ff87c1);box-shadow:0 18px 50px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;color:white;z-index:30;transform-origin:left;transition:transform .9s cubic-bezier(.2,.9,.2,1);">
-          <div style="text-align:center">
-            <div style="font-family:'Merriweather',serif;font-weight:700;font-size:36px;">happy birthday sopii💫</div>
-            <div style="margin-top:8px;opacity:0.95">dibacaa yaa</div>
-            <div style="font-size:12px;margin-top:12px;opacity:0.95">Klik sampul untuk membuka</div>
-          </div>
-        </div>
-
-        <!-- unified inner page containing multiple panels -->
-        <div class="inner-page book-inner" id="innerPage" role="document" aria-hidden="true" style="position:absolute;inset:18px;border-radius:10px;background:#fffafc;padding:0;overflow:hidden;display:flex;flex-direction:column;z-index:10;opacity:0;pointer-events:none;">
-          <div class="inner-header" style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(0,0,0,0.04);background:rgba(255,255,255,0.03);">
-            <div class="page-title" id="headerTitle" style="font-weight:700;color:#ff66b3;font-size:18px">Halaman Khusus</div>
-            <div class="page-counter" id="pageCounter" style="font-size:13px;color:#6b4b5a">1 / 4</div>
-          </div>
-
-          <div class="panels" id="panelsRoot" style="position:relative;flex:1;overflow:hidden">
-            <!-- Panel 0 -->
-            <section class="panel active" data-index="0" id="panel-0" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div id="insideCake" class="inside-cake" title="Klik kue untuk tiup lilin & hati" style="width:380px;height:260px;margin:8px auto 20px;position:relative;display:flex;align-items:flex-end;justify-content:center;cursor:pointer">
-                  <div class="inside-tier3" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:200px;height:46px;bottom:156px;background:linear-gradient(180deg,#fffafc,#ffeff6)"></div>
-                  <div class="inside-tier2" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:250px;height:64px;bottom:110px;background:linear-gradient(180deg,#ffeef7,#ffdfe9)"></div>
-                  <div class="inside-tier1" style="position:absolute;border-radius:14px;box-shadow:inset 0 -8px 18px rgba(0,0,0,0.08);width:320px;height:90px;bottom:20px;background:linear-gradient(180deg,#ffdfec,#ffd6ea)"></div>
-                  <div class="inside-candles" style="position:absolute;bottom:200px;display:flex;gap:12px">
-                    <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>
-                    <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>
-                    <span class="candle" style="width:8px;height:34px;background:linear-gradient(180deg,#fff1a6,#ffd1e6);border-radius:4px;position:relative"></span>
-                  </div>
-                </div>
-
-                <div style="text-align:center;margin-top:8px;font-weight:600;color:#6b3a4d">happy birthday sofii yang ke-17 tahun ✨</div>
-
-                <div style="margin-top:18px">
-                  <div style="font-weight:700;color:#ff66b3;margin-bottom:6px">Untukmu 💕
-                 </div>
-                  <p style="color: #FFA1B9;">“Selamat ulang tahun. Semoga tahun ini menjadi bab baru yang lebih indah buat kamu, setiap doamu menemukan jalan pulang, dan setiap harapanmu bertemu dengan takdir terbaiknya.”</p>
-                </div>
-
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">Halaman Utama</div>
-              </div>
-            </section>
-
-            <!-- Panel 1 -->
-            <section class="panel" data-index="1" id="panel-1" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div style="font-weight:700;color:#ff66b3;margin-bottom:8px">Pelajaran & Harapan</div>
-                <p style="color: #ff66b3;">Hari ini, aku belajar bahwa cinta bukan hanya tentang hadir, tapi tentang bertahan—di hari baik, maupun hari yang sulit.
-Dan kamu… adalah rumah paling tenang untuk pulang</p>
-                <ol style="margin-top:10px; color:#ff66b3">
-                  <li>Kamu adalah alasan sederhana yang mengubah hari-hariku yang monokrom itu menjadi warna - warna indah dalam hidupku.</li>
-                  <li>Semoga hatimu selalu diberi alasan untuk tersenyum.</li>
-                  <li>Semoga aku bisa menjadi salah satu dari alasan itu</li><li>Senyum terus yaa, aku suka liatnya
-                </ol>
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">Selamat ulang tahunnn yaaa. 
-Terima kasih sudah ada, dengan seluruh indahmu (iiii alay beut alay hahaha, cuman sm kmu klo ke yg lain sok cool🤭).</div>
-              </div>
-            </section>
-
-            <!-- Panel 2 (Galeri Momen) - updated with gallery grid -->a
-            <section class="panel" data-index="2" id="panel-2" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div style="font-weight:700;color:#ff66b3;margin-bottom:8px">opii-chan</div>
-
-                <!-- Ganti src dengan path gambar kamu (simpan gambar di folder images/ atau sesuaikan path) -->
-                
-                
-                <div class="gallery-grid" id="galleryGrid">
-                  <img src="Fotonya.jpg" alt="Momen 1" loading="lazy" />
-                  <img src="Fotonya2.jpg" alt="Momen 2" loading="lazy" />
-                  <img src="Fotonya3.jpg" alt="Momen 3" loading="lazy" />
-                  <img src="Fotonya4.jpg" alt="Momen 4" loading="lazy" />
-                  <img src="Fotonya5.jpg" alt="Momen 5" loading="lazy"/>
-                  <img src="Fotonya6.jpg" alt="Momen 6" loading="lazy"/>
-                  
-                  <!-- Tambah <img src="..."> lagi sesuai kebutuhan -->
-                </div>
-
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">🌟✨💖💕💞💘💝💐🌸🎀🎉🎊💫🌈🫶❤️⭐</div>
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">️maap yaa ss tnpa ijinn, nanti di apus koo hhe</div>
-              </div>
-            </section>
-
-            <!-- Panel 3 -->
-            <section class="panel" data-index="3" id="panel-3" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">
-              <div style="padding:8px 0">
-                <div style="font-weight:700;color:#7a5a6c;margin-bottom:8px">dibacaa yahhh💢</div>
-                <p style="color: #ff66b3;">“Setelah semua doa dan harapan yang kutitipkan untukmu, ada satu hal yang paling ingin arza sampein: Arza bersyukur bisa mencintaimu di dunia yang sering kali terasa terburu-buru. Kamu adalah jeda yang membuat segalanya lebih tenang, dan lebih berarti.
-
-Selamat ulang tahun, Sofi. Semoga di usia barumu setiap langkahmu dipenuhi cahaya, dan semua mimpimu menemukan jalan untuk jadi nyata. Dan semoga hatimu selalu dikelilingi oleh orang yang baik, dan di jauhkan dari orang yang jahat, kalo orang jahat nya itu arza gapapa ya allah jauhin aja ya
-Terima kasih sudah membuka ruang di hidupmu untukku—ruang yang membuatku merasa dicintai, dan diterima, aku seneng bisa mnjadi tempat cerita tntang hari - harimu, aku pngenn bahuku jadi tempat ceritamu, keluhmu, masalahmu yg paling nyaman. Aku berharap perjalananmu ke depan akan selalu ditemani kebahagiaan, dan hal-hal indah yang mungkin belum pernah kamu bayangkan sebelumnya.                  
-Aku ga tahu di mana takdir akan membawa kita nanti, tapi aku tahu satu hal: Selama aku masih bisa, i'm still here for you—menemani, dan mencintai dengan cara yang arza bisa.
-Selamat beristirahat ya malam ini jgn sering gdang ksian bdan kmu btuh istirahat. Dengan doaa:
- Semoga aku selalu menjadi bagian dari ceritamu:), oh iyaa jngan lupa ngapalinn, semangat ulangannyaaa, sma jngan nangis nangis terus yaaa sofii, dan jangan merasa ga ada yg peduli denganmu, gitu aja ya bai.”ㅤㅤ— Dari ku, Arzhalhea 18.11.25</p>
-                <div style="margin-top:12px;padding:10px;border-left:4px solid #ff66b3;background:#7a5a6c;border-radius:8px">Selamat ulang tahun! I love youu🎉💗.</div>
-                <div style="margin-top:18px;font-weight:700;color:#ff5cae">Selamat ulang tahun! 🎉💗</div>
-                <div style="text-align:center;padding:12px 0;color:#7a5a6c">Halaman 4</div>
-              </div>
-            </section>
-          </div>
-
-          <div class="panel-footer" style="display:flex;gap:12px;justify-content:center;padding:12px 20px;">
-            <button id="prevBtn" class="btn btn-ghost" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)">Sebelumnya</button>
-            <button id="nextBtn" class="btn btn-primary" style="padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff5cae,#ff87c1);color:#fff">Selanjutnya</button>
-          </div>
-        </div>
-
-        <!-- canvas for fireworks -->
-        <canvas id="fwCanvas"></canvas>
-      </div>
-    </div>
-
-    <div class="controls" style="display:flex;gap:12px;justify-content:center;margin-top:12px;position:relative;z-index:120;">
-      <button class="btn btn-primary" id="toggleBookBtn" data-heartable style="padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff5cae,#ff87c1);color:#fff">Buka / Tutup Buku</button>
-      <a href="index.html" class="btn btn-ghost" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);color:#ff87c1">Kembali</a>
-    </div>
-  </div>
-
-  <audio id="bgmusic_book" src="monokrom.mp3" loop preload="auto"></audio>
-
-  <!-- Lightbox modal (global, di luar inner-page supaya tidak terkena overflow clipping) -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
-    <button class="lightbox-close" aria-label="Tutup">&times;</button>
-    <div style="text-align:center">
-      <img class="lightbox-img" src="" alt=""/>
-      <div class="lightbox-caption" id="lightboxCaption"></div>
-    </div>
-  </div>
-
-  <script>
-    // Fixed interactions: cover click, toggle button, panel navigation, hearts and fireworks
-    document.addEventListener('DOMContentLoaded', () => {
-      const book = document.getElementById('book');
-      const cover = document.getElementById('cover');
-      const toggleBtn = document.getElementById('toggleBookBtn');
-      const innerPage = document.getElementById('innerPage');
-      const panels = Array.from(document.querySelectorAll('.panel'));
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const headerTitle = document.getElementById('headerTitle');
-      const pageCounter = document.getElementById('pageCounter');
-      const insideCake = document.getElementById('insideCake');
-      const fwCanvas = document.getElementById('fwCanvas');
-      const music = document.getElementById('bgmusic_book');
-
-      // try autoplay music
-      (async ()=> { try { await music.play(); } catch(e) {} })();
-
-      // canvas fit
-      function fitCanvas() {
-        const wrap = document.querySelector('.book-wrap');
-        const rect = wrap.getBoundingClientRect();
-        fwCanvas.style.left = rect.left + 'px';
-        fwCanvas.style.top = rect.top + 'px';
-        fwCanvas.width = rect.width;
-        fwCanvas.height = rect.height;
-        fwCanvas.style.width = rect.width + 'px';
-        fwCanvas.style.height = rect.height + 'px';
-      }
-      fitCanvas();
-      window.addEventListener('resize', fitCanvas);
-      const ctx = fwCanvas.getContext('2d');
-
-      // simple particle array for fireworks
-      let particles = [];
-      function pushFirework(x, y) {
-        const count = 20 + Math.floor(Math.random()*20);
-        const hue = Math.floor(Math.random()*360);
-        for (let i=0;i<count;i++){
-          const angle = Math.random()*Math.PI*2;
-          const speed = 1.8 + Math.random()*3.2;
-          particles.push({
-            x, y,
-            vx: Math.cos(angle)*speed,
-            vy: Math.sin(angle)*speed,
-            life: 600 + Math.random()*900,
-            born: performance.now(),
-            color: `hsl(${hue + Math.floor(Math.random()*40-20)} 90% 65%)`,
-            size: 1.5 + Math.random()*3
-          });
-        }
-      }
-
-      function anim(now) {
-        ctx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
-        for (let i = particles.length - 1; i >= 0; i--) {
-          const p = particles[i];
-          const t = now - p.born;
-          if (t > p.life) { particles.splice(i,1); continue; }
-          p.vy += 0.03; p.vx *= 0.998; p.vy *= 0.998;
-          p.x += p.vx; p.y += p.vy;
-          const alpha = 1 - (t / p.life);
-          ctx.beginPath();
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = alpha;
-          const canvasRect = fwCanvas.getBoundingClientRect();
-          ctx.arc(p.x - canvasRect.left, p.y - canvasRect.top, p.size, 0, Math.PI*2);
-          ctx.fill();
-          ctx.globalAlpha = 1;
-        }
-        requestAnimationFrame(anim);
-      }
-      requestAnimationFrame(anim);
-
-      // hearts DOM burst
-      function spawnHeartsAt(x, y, count = 12) {
-        const colors = ['#ff99cc','#ff66b3','#ffd6ea','#ffb3d6','#ff8ac1'];
-        for (let i=0;i<count;i++){
-          const h = document.createElement('div');
-          h.className = 'heart';
-          const size = 10 + Math.random()*26;
-          h.style.width = h.style.height = `${size}px`;
-          h.style.left = `${x - size/2}px`;
-          h.style.top = `${y - size/2}px`;
-          const c1 = colors[Math.floor(Math.random()*colors.length)];
-          const c2 = colors[Math.floor(Math.random()*colors.length)];
-          h.style.background = `linear-gradient(180deg, ${c1}, ${c2})`;
-          document.body.appendChild(h);
-          const dx = (Math.random()-0.5) * 240;
-          const dy = -120 - Math.random()*260;
-          const rot = (Math.random()*360)*(Math.random()>0.5?1:-1);
-          const dur = 800 + Math.random()*1400;
-          h.animate([
-            { transform: `translate(0px,0px) rotate(${rot}deg) scale(.9)`, opacity: 1 },
-            { transform: `translate(${dx}px, ${dy}px) rotate(${rot+120}deg) scale(1.15)`, opacity: 0 }
-          ], { duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
-          setTimeout(()=> h.remove(), dur + 120);
-        }
-      }
-
-      // panel navigation
-      let current = 0;
-      function updateHeader() {
-        const titles = ['Halaman Khusus','Pelajaran & Harapan','Galeri Momen (ga ada momen kita jadi foto sofi ajaa)','Pesan Penutup'];
-        headerTitle.textContent = titles[current] || `Halaman ${current+1}`;
-        pageCounter.textContent = `${current+1} / ${panels.length}`;
-      }
-      function showPanel(idx, dir='next') {
-        if (idx < 0 || idx >= panels.length) return;
-        const old = panels[current];
-        const next = panels[idx];
-        if (old === next) return;
-        old.classList.remove('active');
-        old.style.opacity = '0';
-        old.style.transform = `translateX(${dir==='next'?'-18px':'18px'}) scale(.995)`;
-        // prepare next
-        next.style.transition = 'none';
-        next.style.opacity = '0';
-        next.style.transform = `translateX(${dir==='next'?'18px':'-18px'}) scale(.995)`;
-        next.classList.add('active');
-        void next.offsetWidth;
-        next.style.transition = '';
-        next.style.transform = 'translateX(0) scale(1)';
-        next.style.opacity = '1';
-        // hearts feedback
-        const rect = book.getBoundingClientRect();
-        spawnHeartsAt(rect.left + rect.width/2, rect.top + rect.height/2, 10);
-        current = idx;
-        updateHeader();
-      }
-
-      nextBtn.addEventListener('click', () => {
-        if (current < panels.length - 1) showPanel(current + 1, 'next');
-        else {
-          const rect = book.getBoundingClientRect();
-          spawnHeartsAt(rect.left + rect.width/2, rect.top + 120, 18);
-          pushFirework(rect.left + rect.width/2, rect.top + 80);
-        }
-      });
-      prevBtn.addEventListener('click', () => {
-        if (current > 0) showPanel(current - 1, 'prev');
-      });
-
-      // open/close book
-      let open = false;
-      function openBook(doOpen = true) {
-        open = !!doOpen;
-        book.classList.toggle('open', open);
-        book.classList.toggle('closed', !open);
-        innerPage.style.opacity = open ? '1' : '0';
-        innerPage.style.pointerEvents = open ? 'auto' : 'none';
-        innerPage.setAttribute('aria-hidden', !open);
-        if (open) {
-          cover.style.transform = 'rotateY(-110deg) translateX(-6%)';
-          // fireworks bursts
-          const rect = book.getBoundingClientRect();
-          for (let i=0;i<5;i++){
-            setTimeout(()=> {
-              const x = rect.left + rect.width*(0.2 + Math.random()*0.6);
-              const y = rect.top + rect.height*0.18 + (Math.random()-0.5)*40;
-              pushFirework(x,y);
-            }, i*160);
-          }
-          spawnHeartsAt(window.innerWidth/2, window.innerHeight/2 - 80, 14);
-        } else {
-          cover.style.transform = 'rotateY(0deg)';
-        }
-      }
-
-      cover.addEventListener('click', () => openBook(true));
-      toggleBtn.addEventListener('click', () => openBook(!open));
-
-      // cake click
-      insideCake.addEventListener('click', (e) => {
-        const rect = insideCake.getBoundingClientRect();
-        spawnHeartsAt(rect.left + rect.width/2, rect.top + rect.height/2, 36);
-        pushFirework(rect.left + rect.width/2, rect.top + rect.height/2 - 40);
-        insideCake.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-8px) scale(1.04)' }, { transform: 'translateY(0) scale(1)' }], { duration: 420, easing: 'ease-out' });
-      });
-
-      // click anywhere in panels -> small hearts
-      document.getElementById('panelsRoot').addEventListener('click', (e) => {
-        spawnHeartsAt(e.clientX, e.clientY, 6);
-      });
-
-      // ambient bursts while open
-      let ambient = null;
-      function startAmbient() {
-        if (ambient) return;
-        ambient = setInterval(()=> {
-          if (!open) return;
-          const rect = book.getBoundingClientRect();
-          const x = rect.left + rect.width * (0.25 + Math.random()*0.5);
-          const y = rect.top + rect.height * (0.18 + Math.random()*0.2);
-          pushFirework(x,y);
-          spawnHeartsAt(x, y + 40, 6);
-        }, 2600);
-      }
-      function stopAmbient() { if (ambient) { clearInterval(ambient); ambient = null; } }
-      const obs = new MutationObserver(() => {
-        if (book.classList.contains('open')) startAmbient(); else stopAmbient();
-      });
-      obs.observe(book, { attributes: true });
-
-      // Gallery + Lightbox handlers (integrated)
-      const gallery = document.getElementById('galleryGrid');
-      const lightbox = document.getElementById('lightbox');
-      const lbImg = lightbox?.querySelector('.lightbox-img');
-      const lbCaption = document.getElementById('lightboxCaption');
-      const lbClose = lightbox?.querySelector('.lightbox-close');
-
-      function openLightbox(src, caption) {
-        if (!lightbox) return;
-        lbImg.src = src;
-        lbImg.alt = caption || '';
-        lbCaption.textContent = caption || '';
-        lightbox.classList.add('show');
-        lightbox.setAttribute('aria-hidden', 'false');
-        // small celebratory burst when opening a photo
-        spawnHeartsAt(window.innerWidth/2, window.innerHeight/2, 8);
-      }
-      function closeLightbox() {
-        if (!lightbox) return;
-        lightbox.classList.remove('show');
-        lightbox.setAttribute('aria-hidden', 'true');
-        lbImg.src = '';
-        lbCaption.textContent = '';
-      }
-
-      if (gallery) {
-        gallery.addEventListener('click', (e) => {
-          const img = e.target.closest('img');
-          if (!img) return;
-          openLightbox(img.src, img.alt || '');
-        });
-      }
-      if (lbClose) lbClose.addEventListener('click', closeLightbox);
-      if (lightbox) {
-        lightbox.addEventListener('click', (e) => {
-          if (e.target === lightbox) closeLightbox();
-        });
-      }
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeLightbox();
-      });
-
-      // expose helper to add images dynamically (e.g., from console or other script)
-      window.addToGallery = function(src, alt = '') {
-        if (!gallery) return;
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = alt;
-        img.loading = 'lazy';
-        gallery.appendChild(img);
-      };
-
-      // init
-      panels.forEach((p,i)=> { if (i !== 0) p.classList.remove('active'); else p.classList.add('active'); });
-      current = 0;
-      updateHeader();
-    });
-  </script>
-</body>
-                </html>
+      // try autoplay music  
+      (async ()=> { try { await music.play(); } catch(e) {} })();  
+  
+      // canvas fit  
+      function fitCanvas() {  
+        const wrap = document.querySelector('.book-wrap');  
+        const rect = wrap.getBoundingClientRect();  
+        fwCanvas.style.left = rect.left + 'px';  
+        fwCanvas.style.top = rect.top + 'px';  
+        fwCanvas.width = rect.width;  
+        fwCanvas.height = rect.height;  
+        fwCanvas.style.width = rect.width + 'px';  
+        fwCanvas.style.height = rect.height + 'px';  
+      }  
+      fitCanvas();  
+      window.addEventListener('resize', fitCanvas);  
+      const ctx = fwCanvas.getContext('2d');  
+  
+      // simple particle array for fireworks  
+      let particles = [];  
+      function pushFirework(x, y) {  
+        const count = 20 + Math.floor(Math.random()*20);  
+        const hue = Math.floor(Math.random()*360);  
+        for (let i=0;i<count;i++){  
+          const angle = Math.random()*Math.PI*2;  
+          const speed = 1.8 + Math.random()*3.2;  
+          particles.push({  
+            x, y,  
+            vx: Math.cos(angle)*speed,  
+            vy: Math.sin(angle)*speed,  
+            life: 600 + Math.random()*900,  
+            born: performance.now(),  
+            color: `hsl(${hue + Math.floor(Math.random()*40-20)} 90% 65%)`,  
+            size: 1.5 + Math.random()*3  
+          });  
+        }  
+      }  
+  
+      function anim(now) {  
+        ctx.clearRect(0,0,fwCanvas.width,fwCanvas.height);  
+        for (let i = particles.length - 1; i >= 0; i--) {  
+          const p = particles[i];  
+          const t = now - p.born;  
+          if (t > p.life) { particles.splice(i,1); continue; }  
+          p.vy += 0.03; p.vx *= 0.998; p.vy *= 0.998;  
+          p.x += p.vx; p.y += p.vy;  
+          const alpha = 1 - (t / p.life);  
+          ctx.beginPath();  
+          ctx.fillStyle = p.color;  
+          ctx.globalAlpha = alpha;  
+          const canvasRect = fwCanvas.getBoundingClientRect();  
+          ctx.arc(p.x - canvasRect.left, p.y - canvasRect.top, p.size, 0, Math.PI*2);  
+          ctx.fill();  
+          ctx.globalAlpha = 1;  
+        }  
+        requestAnimationFrame(anim);  
+      }  
+      requestAnimationFrame(anim);  
+  
+      // hearts DOM burst  
+      function spawnHeartsAt(x, y, count = 12) {  
+        const colors = ['#ff99cc','#ff66b3','#ffd6ea','#ffb3d6','#ff8ac1'];  
+        for (let i=0;i<count;i++){  
+          const h = document.createElement('div');  
+          h.className = 'heart';  
+          const size = 10 + Math.random()*26;  
+          h.style.width = h.style.height = `${size}px`;  
+          h.style.left = `${x - size/2}px`;  
+          h.style.top = `${y - size/2}px`;  
+          const c1 = colors[Math.floor(Math.random()*colors.length)];  
+          const c2 = colors[Math.floor(Math.random()*colors.length)];  
+          h.style.background = `linear-gradient(180deg, ${c1}, ${c2})`;  
+          document.body.appendChild(h);  
+          const dx = (Math.random()-0.5) * 240;  
+          const dy = -120 - Math.random()*260;  
+          const rot = (Math.random()*360)*(Math.random()>0.5?1:-1);  
+          const dur = 800 + Math.random()*1400;  
+          h.animate([  
+            { transform: `translate(0px,0px) rotate(${rot}deg) scale(.9)`, opacity: 1 },  
+            { transform: `translate(${dx}px, ${dy}px) rotate(${rot+120}deg) scale(1.15)`, opacity: 0 }  
+          ], { duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });  
+          setTimeout(()=> h.remove(), dur + 120);  
+        }  
+      }  
+  
+      // panel navigation  
+      let current = 0;  
+      function updateHeader() {  
+        const titles = ['Halaman Khusus','Pelajaran & Harapan','Galeri Momen (ga ada momen kita jadi foto sofi ajaa)','Pesan Penutup'];  
+        headerTitle.textContent = titles[current] || `Halaman ${current+1}`;  
+        pageCounter.textContent = `${current+1} / ${panels.length}`;  
+      }  
+      function showPanel(idx, dir='next') {  
+        if (idx < 0 || idx >= panels.length) return;  
+        const old = panels[current];  
+        const next = panels[idx];  
+        if (old === next) return;  
+        old.classList.remove('active');  
+        old.style.opacity = '0';  
+        old.style.transform = `translateX(${dir==='next'?'-18px':'18px'}) scale(.995)`;  
+        // prepare next  
+        next.style.transition = 'none';  
+        next.style.opacity = '0';  
+        next.style.transform = `translateX(${dir==='next'?'18px':'-18px'}) scale(.995)`;  
+        next.classList.add('active');  
+        void next.offsetWidth;  
+        next.style.transition = '';  
+        next.style.transform = 'translateX(0) scale(1)';  
+        next.style.opacity = '1';  
+        // hearts feedback  
+        const rect = book.getBoundingClientRect();  
+        spawnHeartsAt(rect.left + rect.width/2, rect.top + rect.height/2, 10);  
+        current = idx;  
+        updateHeader();  
+      }  
+  
+      nextBtn.addEventListener('click', () => {  
+        if (current < panels.length - 1) showPanel(current + 1, 'next');  
+        else {  
+          const rect = book.getBoundingClientRect();  
+          spawnHeartsAt(rect.left + rect.width/2, rect.top + 120, 18);  
+          pushFirework(rect.left + rect.width/2, rect.top + 80);  
+        }  
+      });  
+      prevBtn.addEventListener('click', () => {  
+        if (current > 0) showPanel(current - 1, 'prev');  
+      });  
+  
+      // open/close book  
+      let open = false;  
+      function openBook(doOpen = true) {  
+        open = !!doOpen;  
+        book.classList.toggle('open', open);  
+        book.classList.toggle('closed', !open);  
+        innerPage.style.opacity = open ? '1' : '0';  
+        innerPage.style.pointerEvents = open ? 'auto' : 'none';  
+        innerPage.setAttribute('aria-hidden', !open);  
+        if (open) {  
+          cover.style.transform = 'rotateY(-110deg) translateX(-6%)';  
+          // fireworks bursts  
+          const rect = book.getBoundingClientRect();  
+          for (let i=0;i<5;i++){  
+            setTimeout(()=> {  
+              const x = rect.left + rect.width*(0.2 + Math.random()*0.6);  
+              const y = rect.top + rect.height*0.18 + (Math.random()-0.5)*40;  
+              pushFirework(x,y);  
+            }, i*160);  
+          }  
+          spawnHeartsAt(window.innerWidth/2, window.innerHeight/2 - 80, 14);  
+        } else {  
+          cover.style.transform = 'rotateY(0deg)';  
+        }  
+      }  
+  
+      cover.addEventListener('click', () => openBook(true));  
+      toggleBtn.addEventListener('click', () => openBook(!open));  
+  
+      // cake click  
+      insideCake.addEventListener('click', (e) => {  
+        const rect = insideCake.getBoundingClientRect();  
+        spawnHeartsAt(rect.left + rect.width/2, rect.top + rect.height/2, 36);  
+        pushFirework(rect.left + rect.width/2, rect.top + rect.height/2 - 40);  
+        insideCake.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-8px) scale(1.04)' }, { transform: 'translateY(0) scale(1)' }], { duration: 420, easing: 'ease-out' });  
+      });  
+  
+      // click anywhere in panels -> small hearts  
+      document.getElementById('panelsRoot').addEventListener('click', (e) => {  
+        spawnHeartsAt(e.clientX, e.clientY, 6);  
+      });  
+  
+      // ambient bursts while open  
+      let ambient = null;  
+      function startAmbient() {  
+        if (ambient) return;  
+        ambient = setInterval(()=> {  
+          if (!open) return;  
+          const rect = book.getBoundingClientRect();  
+          const x = rect.left + rect.width * (0.25 + Math.random()*0.5);  
+          const y = rect.top + rect.height * (0.18 + Math.random()*0.2);  
+          pushFirework(x,y);  
+          spawnHeartsAt(x, y + 40, 6);  
+        }, 2600);  
+      }  
+      function stopAmbient() { if (ambient) { clearInterval(ambient); ambient = null; } }  
+      const obs = new MutationObserver(() => {  
+        if (book.classList.contains('open')) startAmbient(); else stopAmbient();  
+      });  
+      obs.observe(book, { attributes: true });  
+  
+      // Gallery + Lightbox handlers (integrated)  
+      const gallery = document.getElementById('galleryGrid');  
+      const lightbox = document.getElementById('lightbox');  
+      const lbImg = lightbox?.querySelector('.lightbox-img');  
+      const lbCaption = document.getElementById('lightboxCaption');  
+      const lbClose = lightbox?.querySelector('.lightbox-close');  
+  
+      function openLightbox(src, caption) {  
+        if (!lightbox) return;  
+        lbImg.src = src;  
+        lbImg.alt = caption || '';  
+        lbCaption.textContent = caption || '';  
+        lightbox.classList.add('show');  
+        lightbox.setAttribute('aria-hidden', 'false');  
+        // small celebratory burst when opening a photo  
+        spawnHeartsAt(window.innerWidth/2, window.innerHeight/2, 8);  
+      }  
+      function closeLightbox() {  
+        if (!lightbox) return;  
+        lightbox.classList.remove('show');  
+        lightbox.setAttribute('aria-hidden', 'true');  
+        lbImg.src = '';  
+        lbCaption.textContent = '';  
+      }  
+  
+      if (gallery) {  
+        gallery.addEventListener('click', (e) => {  
+          const img = e.target.closest('img');  
+          if (!img) return;  
+          openLightbox(img.src, img.alt || '');  
+        });  
+      }  
+      if (lbClose) lbClose.addEventListener('click', closeLightbox);  
+      if (lightbox) {  
+        lightbox.addEventListener('click', (e) => {  
+          if (e.target === lightbox) closeLightbox();  
+        });  
+      }  
+      document.addEventListener('keydown', (e) => {  
+        if (e.key === 'Escape') closeLightbox();  
+      });  
+  
+      // expose helper to add images dynamically (e.g., from console or other script)  
+      window.addToGallery = function(src, alt = '') {  
+        if (!gallery) return;  
+        const img = document.createElement('img');  
+        img.src = src;  
+        img.alt = alt;  
+        img.loading = 'lazy';  
+        gallery.appendChild(img);  
+      };  
+  
+      // init  
+      panels.forEach((p,i)=> { if (i !== 0) p.classList.remove('active'); else p.classList.add('active'); });  
+      current = 0;  
+      updateHeader();  
+    });  
+  </script>  </body>  
+                </html>  
