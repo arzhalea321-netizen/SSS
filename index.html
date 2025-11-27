@@ -4,17 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Selamat Ulang Tahun — Sofi Adhiyah Marwah 💕</title>
-
-  <!-- FONT -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
   <div class="page-root">
-
     <header class="top">
       <h1>Selamat Ulang Tahun, yaa</h1>
       <p class="subtitle">Semoga harimu seindah senyummuu 💗</p>
@@ -22,7 +16,8 @@
 
     <main class="layout">
       <section class="left-col">
-        <div class="card cake-area" id="cakeArea">
+        <div class="card cake-area" id="cakeArea" data-heartable>
+          <!-- Rapi CSS cake -->
           <div class="cake-wrap" id="mainCake">
             <div class="cake-tier tier3"></div>
             <div class="cake-tier tier2"></div>
@@ -34,7 +29,40 @@
               <span class="candle" style="--i:2"></span>
             </div>
           </div>
-          <p class="cake-text">Happy Birthday ✨</p>
+          <p class="cake-text">happy birthday✨</p>
+          <div class="card-actions">
+            <button class="btn btn-primary" id="openBookBtn" data-heartable>Speciall</button>
+            <button class="btn btn-outline" id="playBtn">Putar Musik ▶</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="right-col">
+        <div class="card photo-polaroid">
+          <div class="polaroid">
+            <img src="Fotoini.jpg" alt="Foto" class="photo" />
+            <div class="polaroid-caption">Untukmu🤏 </div>
+          </div>
+        </div>
+
+        <div class="card short-note">
+          <p>“Selamat ulang tahun sofii. Semoga harimu secantik dirimu, jangan lupa bahagia hari ini, kamu pantas buat di rayakan.”</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="particles-root" aria-hidden="true"></div>
+
+    <audio id="bgmusic" src="lastnight.mp3" loop preload="auto"></audio>
+
+    <footer class="footer"> 💕Cuman bisa ngasih ini💕</footer>
+<footer class="footer"> pngennya si ngsih bunga</footer>
+<footer class="footer"> —arzaa</footer>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>          <p class="cake-text">Happy Birthday ✨</p>
 
           <div class="card-actions">
             <button class="btn btn-primary" id="openBookBtn">Speciall</button>
