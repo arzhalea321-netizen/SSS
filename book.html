@@ -146,7 +146,7 @@
         </section>  
 
         <!-- Panel 1 -->  
-        <section class="panel" data-index="1" id="panel-1" style="position:absolute;inset:0;padding:22px 34px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .42s ease, transform .42s ease;background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">  
+        <section class="panel" data-index="3" id="panel-3" style="position:absolute; inset:0; padding:22px 34px; overflow-y:auto; opacity:0; pointer-events:none; transform:translateX(18px) scale(995); transition:opacity .42s ease, transform .42s ease; background-image:repeating-linear-gradient(0deg, transparent 0 28px, #e8dbe7 28px 29px), linear-gradient(90deg, #ffd6ea 56px, transparent 56px);">  
           <div style="padding:8px 0">  
             <div style="font-weight:700;color:#ff66b3;margin-bottom:8px">Pelajaran & Harapan</div>  
             <p style="color: #ff66b3;">Hari ini, aku belajar bahwa cinta bukan hanya tentang hadir, tapi tentang bertahan—di hari baik, maupun hari yang sulit.
@@ -221,6 +221,18 @@ Semoga aku selalu menjadi bagian dari ceritamu, oh iyaa jngan lupa ngapalinn, se
 </div>
 
   </div>  <audio id="bgmusic_book" src="monokrom.mp3" loop preload="auto"></audio>
+
+<style>
+  .panel.active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateX(0) scale(1) !important;
+    overflow-y: auto !important;
+  }
+</style>
+
+</body>
+</html>
 
   <!-- Lightbox modal (global, di luar inner-page supaya tidak terkena overflow clipping) -->    <div id="lightbox" class="lightbox" aria-hidden="true">  
     <button class="lightbox-close" aria-label="Tutup">&times;</button>  
